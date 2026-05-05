@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>南航里程票比价工具</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 800px; margin: 0 auto; }
+h1 { color: white; text-align: center; margin-bottom: 30px; font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.card { background: white; border-radius: 16px; padding: 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.form-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
+select, input { width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 10px; font-size: 16px; transition: all 0.3s; background: #f8f9fa; }
+select:focus, input:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102,126,234,0.4); }
+.btn:active { transform: translateY(0); }
+.result { display: none; }
+.result.show { display: block; }
+.result-header { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+.result-header h2 { font-size: 20px; margin-bottom: 10px; }
+.result-header p { opacity: 0.9; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 14px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+tr:hover { background: #f8f9fa; }
+.profit { font-weight: 700; font-size: 16px; }
+.positive { color: #10b981; }
+.negative { color: #ef4444; }
+.zero { color: #f59e0b; }
+.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-green { background: #d1fae5; color: #065f46; }
+.badge-red { background: #fee2e2; color: #991b1b; }
+.badge-yellow { background: #fef3c7; color: #92400e; }
+.tips { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; border-radius: 0 8px 8px 0; margin-top: 20px; }
+.tips h4 { color: #1e40af; margin-bottom: 8px; }
+.tips p { color: #1e3a8a; font-size: 14px; line-height: 1.6; }
+.swap-btn { background: none; border: 2px solid #667eea; color: #667eea; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; margin-top: 5px; }
+.swap-btn:hover { background: #667eea; color: white; }
+@media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>✈️ 南航里程票比价工具</h1>
+  
+  <div class="card">
+    <div class="form-group">
+      <label>出发城市</label>
+      <select id="dep">
+        <option value="CTU">成都</option>
+        <option value="CAN">广州</option>
+        <option value="PEK">北京</option>
+        <option value="SHA">上海</option>
+        <option value="SZX">深圳</option>
+        <option value="CKG">重庆</option>
+        <option value="KMG">昆明</option>
+        <option value="XIY">西安</option>
+        <option value="HGH">杭州</option>
+        <option value="WUH">武汉</option>
+        <option value="NKG">南京</option>
+        <option value="CSX">长沙</option>
+        <option value="TAO">青岛</option>
+        <option value="DLC">大连</option>
+        <option value="TSN">天津</option>
+        <option value="XMN">厦门</option>
+        <option value="FOC">福州</option>
+        <option value="HAK">海口</option>
+        <option value="SYX">三亚</option>
+        <option value="CGO">郑州</option>
+        <option value="TYN">太原</option>
+        <option value="SHE">沈阳</option>
+        <option value="HRB">哈尔滨</option>
+        <option value="URC">乌鲁木齐</option>
+      </select>
+    </div>
+    
+    <button class="swap-btn" onclick="swapCities()">🔄 交换出发/到达</button>
+    
+    <div class="form-group">
+      <label>到达城市</label>
+      <select id="arr">
+        <option value="SYX">三亚</option>
+        <option value="HAK">海口</option>
+        <option value="CAN">广州</option>
+        <option value="PEK">北京</option>
+        <option value="SHA">上海</option>
+        <option value="SZX">深圳</option>
+        <option value="CTU">成都</option>
+        <option value="CKG">重庆</option>
+        <option value="KMG">昆明</option>
+        <option value="XIY">西安</option>
+        <option value="HGH">杭州</option>
+        <option value="WUH">武汉</option>
+        <option value="NKG">南京</option>
+        <option value="CSX">长沙</option>
+        <option value="TAO">青岛</option>
+        <option value="DLC">大连</option>
+        <option value="TSN">天津</option>
+        <option value="XMN">厦门</option>
+        <option value="FOC">福州</option>
+        <option value="CGO">郑州</option>
+        <option value="TYN">太原</option>
+        <option value="SHE">沈阳</option>
+        <option value="HRB">哈尔滨</option>
+        <option value="URC">乌鲁木齐</option>
+      </select>
+    </div>
+    
+    <div class="row">
+      <div class="form-group">
+        <label>出发日期</label>
+        <input type="date" id="date" value="2026-06-01">
+      </div>
+      <div class="form-group">
+        <label>上游价格 (元/万里程)</label>
+        <input type="number" id="cost" value="300" min="100" max="1000" step="10">
+      </div>
+    </div>
+    
+    <button class="btn" onclick="calculate()">🔍 查询比价</button>
+  </div>
+  
+  <div class="card result" id="result">
+    <div class="result-header">
+      <h2 id="route-title"></h2>
+      <p id="route-info"></p>
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>舱位</th>
+          <th>所需里程</th>
+          <th>里程成本</th>
+          <th>携程参考价</th>
+          <th>利润</th>
+          <th>利润率</th>
+        </tr>
+      </thead>
+      <tbody id="result-body"></tbody>
+    </table>
+    
+    <div class="tips">
+      <h4>💡 使用提示</h4>
+      <p>1. 携程价格为参考价，实际价格可能有波动<br>
+         2. 点击"打开携程"可查看实时价格<br>
+         3. 绿色=有利润，红色=亏损，黄色=持平<br>
+         4. 建议优先关注公务舱和头等舱，利润空间更大</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const AIRPORTS = {
+  CTU: "成都", SYX: "三亚", PEK: "北京", PKX: "北京大兴",
+  SHA: "上海虹桥", PVG: "上海浦东", CAN: "广州", SZX: "深圳",
+  CKG: "重庆", KMG: "昆明", XIY: "西安", HGH: "杭州",
+  WUH: "武汉", NKG: "南京", CSX: "长沙", TAO: "青岛",
+  DLC: "大连", TSN: "天津", XMN: "厦门", FOC: "福州",
+  HAK: "海口", CGO: "郑州", TYN: "太原", SHE: "沈阳",
+  HRB: "哈尔滨", URC: "乌鲁木齐", LHW: "兰州", KWE: "贵阳"
+};
+
+const DISTANCES = {
+  "CTU-SYX": 1850, "CTU-PEK": 1800, "CTU-SHA": 1700, "CTU-CAN": 1300,
+  "CTU-SZX": 1400, "CTU-KMG": 700, "CTU-CKG": 350, "CTU-XIY": 650,
+  "CAN-SYX": 650, "CAN-PEK": 1900, "CAN-SHA": 1200, "CAN-SZX": 120,
+  "CAN-KMG": 1100, "CAN-HAK": 450, "PEK-SYX": 2500, "PEK-SHA": 1100,
+  "PEK-SZX": 2000, "PEK-DLC": 550, "SHA-SYX": 1900, "SHA-SZX": 1300,
+  "SHA-XMN": 700, "SZX-SYX": 550, "SZX-HAK": 500, "CKG-SYX": 1500,
+  "KMG-SYX": 1300, "XIY-SYX": 2000, "HGH-SYX": 1700, "WUH-SYX": 1500,
+  "NKG-SYX": 1800, "CSX-SYX": 1200, "TAO-SYX": 2200, "DLC-SYX": 2800,
+  "TSN-SYX": 2300, "XMN-SYX": 1000, "FOC-SYX": 1200, "CGO-SYX": 1700,
+  "TYN-SYX": 2100, "SHE-SYX": 3000, "HRB-SYX": 3500, "URC-SYX": 4000,
+  "HAK-CAN": 450, "HAK-PEK": 2400, "HAK-SHA": 1800, "HAK-SZX": 500
+};
+
+// 携程参考价格（经济舱，根据市场行情估算）
+const CTRIP_PRICES = {
+  "CTU-SYX": 550, "CTU-PEK": 800, "CTU-SHA": 750, "CTU-CAN": 600,
+  "CAN-SYX": 450, "CAN-PEK": 900, "PEK-SYX": 1200, "SHA-SYX": 1000,
+  "SZX-SYX": 400, "CKG-SYX": 650, "KMG-SYX": 700, "HGH-SYX": 850,
+  "WUH-SYX": 750, "CSX-SYX": 600
+};
+
+function getMileageRequired(distance, cabin) {
+  let zones;
+  if (distance <= 800) zones = {economy: 6000, business: 12000, first: 15000};
+  else if (distance <= 1700) zones = {economy: 12000, business: 24000, first: 30000};
+  else if (distance <= 3000) zones = {economy: 15000, business: 30000, first: 38000};
+  else if (distance <= 5000) zones = {economy: 25000, business: 50000, first: 63000};
+  else zones = {economy: 40000, business: 60000, first: 80000};
+  return zones[cabin];
+}
+
+function swapCities() {
+  const dep = document.getElementById('dep');
+  const arr = document.getElementById('arr');
+  const temp = dep.value;
+  dep.value = arr.value;
+  arr.value = temp;
+}
+
+function calculate() {
+  const dep = document.getElementById('dep').value;
+  const arr = document.getElementById('arr').value;
+  const date = document.getElementById('date').value;
+  const cost = parseFloat(document.getElementById('cost').value);
+  
+  if (dep === arr) {
+    alert('出发和到达城市不能相同！');
+    return;
+  }
+  
+  const depName = AIRPORTS[dep];
+  const arrName = AIRPORTS[arr];
+  const key = dep + '-' + arr;
+  const reverseKey = arr + '-' + dep;
+  const distance = DISTANCES[key] || DISTANCES[reverseKey] || 2000;
+  const ctripPrice = CTRIP_PRICES[key] || CTRIP_PRICES[reverseKey] || 800;
+  
+  const cabins = [
+    {name: '经济舱', key: 'economy', icon: '💺'},
+    {name: '公务舱', key: 'business', icon: '🛋️'},
+    {name: '头等舱', key: 'first', icon: '👑'}
+  ];
+  
+  let html = '';
+  cabins.forEach(cabin => {
+    const miles = getMileageRequired(distance, cabin.key);
+    const mileCost = Math.round(miles * cost / 10000);
+    const ctrip = cabin.key === 'economy' ? ctripPrice : 
+                  cabin.key === 'business' ? Math.round(ctripPrice * 3.5) : 
+                  Math.round(ctripPrice * 5);
+    const profit = ctrip - mileCost;
+    const profitRate = mileCost > 0 ? Math.round(profit / mileCost * 100) : 0;
+    
+    const profitClass = profit > 50 ? 'positive' : profit < -50 ? 'negative' : 'zero';
+    const badgeClass = profit > 50 ? 'badge-green' : profit < -50 ? 'badge-red' : 'badge-yellow';
+    const badgeText = profit > 50 ? '可卖' : profit < -50 ? '亏损' : '持平';
+    
+    html += `<tr>
+      <td><strong>${cabin.icon} ${cabin.name}</strong></td>
+      <td>${miles.toLocaleString()}</td>
+      <td>¥${mileCost.toLocaleString()}</td>
+      <td>¥${ctrip.toLocaleString()}</td>
+      <td class="profit ${profitClass}">¥${profit > 0 ? '+' : ''}${profit.toLocaleString()}</td>
+      <td><span class="badge ${badgeClass}">${badgeText} ${profitRate}%</span></td>
+    </tr>`;
+  });
+  
+  document.getElementById('route-title').textContent = `${depName} → ${arrName}`;
+  document.getElementById('route-info').textContent = `${date} | 距离约${distance}公里 | 里程成本${cost}元/万`;
+  document.getElementById('result-body').innerHTML = html;
+  document.getElementById('result').classList.add('show');
+  
+  // 滚动到结果
+  document.getElementById('result').scrollIntoView({behavior: 'smooth'});
+}
+
+// 设置默认日期为明天
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+document.getElementById('date').value = tomorrow.toISOString().split('T')[0];
+</script>
+</body>
+</html>
