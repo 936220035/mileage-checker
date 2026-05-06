@@ -284,13 +284,31 @@ function getCity(code) { return CITIES.find(c => c.code === code); }
 // ============ 调携程最低价API ============
 async function fetchLowestPrice(depCode, arrCode) {
   const url = `https://flights.ctrip.com/itinerary/api/12808/lowestPrice?flightWay=Oneway&dcity=${depCode}&acity=${arrCode}&direct=false&army=false`;
+  // 方案1: 直接调用（可能被CORS拦截）
   try {
-    const resp = await fetch(url, {headers:{"Referer":"https://flights.ctrip.com/online/channel/domestic"}});
-    const data = await resp.json();
-    if (data.status === 0 && data.data?.oneWayPrice?.[0]) {
-      return data.data.oneWayPrice[0]; // {日期: 价格}
+    const resp = await fetch(url, {
+      headers:{"Referer":"https://flights.ctrip.com/online/channel/domestic"},
+      signal: AbortSignal.timeout(8000)
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.status === 0 && data.data?.oneWayPrice?.[0]) return data.data.oneWayPrice[0];
     }
   } catch(e) {}
+  // 方案2: CORS代理
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`,
+  ];
+  for (const proxyUrl of proxies) {
+    try {
+      const resp = await fetch(proxyUrl, {signal: AbortSignal.timeout(8000)});
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.status === 0 && data.data?.oneWayPrice?.[0]) return data.data.oneWayPrice[0];
+      }
+    } catch(e) {}
+  }
   return null;
 }
 
