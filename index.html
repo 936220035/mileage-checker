@@ -3,269 +3,516 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>南航里程票比价工具</title>
+<title>里程票比价工具 V2</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-.container { max-width: 800px; margin: 0 auto; }
-h1 { color: white; text-align: center; margin-bottom: 30px; font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-.card { background: white; border-radius: 16px; padding: 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.form-group { margin-bottom: 20px; }
-label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
-select, input { width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 10px; font-size: 16px; transition: all 0.3s; background: #f8f9fa; }
-select:focus, input:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102,126,234,0.4); }
-.btn:active { transform: translateY(0); }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; padding: 20px; color: #e0e0e0; }
+.container { max-width: 960px; margin: 0 auto; }
+h1 { color: #fff; text-align: center; margin-bottom: 8px; font-size: 28px; }
+.subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+.card { background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 16px; border: 1px solid #334155; }
+.form-group { margin-bottom: 16px; }
+label { display: block; margin-bottom: 6px; font-weight: 600; color: #94a3b8; font-size: 13px; }
+select, input { width: 100%; padding: 10px 14px; border: 1px solid #475569; border-radius: 8px; font-size: 14px; background: #0f172a; color: #e0e0e0; }
+select:focus, input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-row { display: flex; gap: 10px; }
+.btn-secondary { background: linear-gradient(135deg, #475569, #64748b); }
+.swap-btn { background: none; border: 1px solid #3b82f6; color: #3b82f6; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.swap-btn:hover { background: #3b82f6; color: white; }
 .result { display: none; }
 .result.show { display: block; }
-.result-header { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
-.result-header h2 { font-size: 20px; margin-bottom: 10px; }
-.result-header p { opacity: 0.9; font-size: 14px; }
-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-td { padding: 14px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-tr:hover { background: #f8f9fa; }
-.profit { font-weight: 700; font-size: 16px; }
+.section-title { font-size: 15px; font-weight: 700; color: #3b82f6; margin: 16px 0 10px; display: flex; align-items: center; gap: 6px; }
+table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+th { background: #0f172a; padding: 10px 8px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 10px 8px; border-bottom: 1px solid #1e293b; }
+tr:hover { background: rgba(59,130,246,0.05); }
+.profit { font-weight: 700; }
 .positive { color: #10b981; }
 .negative { color: #ef4444; }
 .zero { color: #f59e0b; }
-.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-.badge-green { background: #d1fae5; color: #065f46; }
-.badge-red { background: #fee2e2; color: #991b1b; }
-.badge-yellow { background: #fef3c7; color: #92400e; }
-.tips { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; border-radius: 0 8px 8px 0; margin-top: 20px; }
-.tips h4 { color: #1e40af; margin-bottom: 8px; }
-.tips p { color: #1e3a8a; font-size: 14px; line-height: 1.6; }
-.swap-btn { background: none; border: 2px solid #667eea; color: #667eea; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; margin-top: 5px; }
-.swap-btn:hover { background: #667eea; color: white; }
-@media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.badge-green { background: rgba(16,185,129,0.15); color: #10b981; }
+.badge-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+.badge-yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.badge-blue { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.badge-purple { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+.tips { background: rgba(59,130,246,0.08); border-left: 3px solid #3b82f6; padding: 12px; border-radius: 0 8px 8px 0; margin-top: 16px; font-size: 13px; color: #94a3b8; line-height: 1.6; }
+.loading { display: inline-block; width: 16px; height: 16px; border: 2px solid #475569; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.route-info { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0; font-size: 13px; color: #94a3b8; }
+.route-info span { background: #0f172a; padding: 4px 10px; border-radius: 6px; }
+.tab-row { display: flex; gap: 4px; margin-bottom: 12px; }
+.tab { padding: 6px 16px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 13px; background: #0f172a; color: #64748b; border: 1px solid #334155; border-bottom: none; }
+.tab.active { background: #1e293b; color: #3b82f6; border-color: #3b82f6; }
+.hidden { display: none; }
+@media (max-width: 600px) { .row, .row3 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>✈️ 南航里程票比价工具</h1>
-  
+  <h1>✈️ 里程票比价工具 V2</h1>
+  <p class="subtitle">南航 + 川航 · 实时携程价格 · 利润自动计算</p>
+
+  <!-- 输入区 -->
   <div class="card">
-    <div class="form-group">
-      <label>出发城市</label>
-      <select id="dep">
-        <option value="CTU">成都</option>
-        <option value="CAN">广州</option>
-        <option value="PEK">北京</option>
-        <option value="SHA">上海</option>
-        <option value="SZX">深圳</option>
-        <option value="CKG">重庆</option>
-        <option value="KMG">昆明</option>
-        <option value="XIY">西安</option>
-        <option value="HGH">杭州</option>
-        <option value="WUH">武汉</option>
-        <option value="NKG">南京</option>
-        <option value="CSX">长沙</option>
-        <option value="TAO">青岛</option>
-        <option value="DLC">大连</option>
-        <option value="TSN">天津</option>
-        <option value="XMN">厦门</option>
-        <option value="FOC">福州</option>
-        <option value="HAK">海口</option>
-        <option value="SYX">三亚</option>
-        <option value="CGO">郑州</option>
-        <option value="TYN">太原</option>
-        <option value="SHE">沈阳</option>
-        <option value="HRB">哈尔滨</option>
-        <option value="URC">乌鲁木齐</option>
-      </select>
-    </div>
-    
-    <button class="swap-btn" onclick="swapCities()">🔄 交换出发/到达</button>
-    
-    <div class="form-group">
-      <label>到达城市</label>
-      <select id="arr">
-        <option value="SYX">三亚</option>
-        <option value="HAK">海口</option>
-        <option value="CAN">广州</option>
-        <option value="PEK">北京</option>
-        <option value="SHA">上海</option>
-        <option value="SZX">深圳</option>
-        <option value="CTU">成都</option>
-        <option value="CKG">重庆</option>
-        <option value="KMG">昆明</option>
-        <option value="XIY">西安</option>
-        <option value="HGH">杭州</option>
-        <option value="WUH">武汉</option>
-        <option value="NKG">南京</option>
-        <option value="CSX">长沙</option>
-        <option value="TAO">青岛</option>
-        <option value="DLC">大连</option>
-        <option value="TSN">天津</option>
-        <option value="XMN">厦门</option>
-        <option value="FOC">福州</option>
-        <option value="CGO">郑州</option>
-        <option value="TYN">太原</option>
-        <option value="SHE">沈阳</option>
-        <option value="HRB">哈尔滨</option>
-        <option value="URC">乌鲁木齐</option>
-      </select>
-    </div>
-    
     <div class="row">
       <div class="form-group">
-        <label>出发日期</label>
-        <input type="date" id="date" value="2026-06-01">
+        <label>出发城市</label>
+        <select id="dep"></select>
       </div>
       <div class="form-group">
-        <label>上游价格 (元/万里程)</label>
-        <input type="number" id="cost" value="300" min="100" max="1000" step="10">
+        <label>到达城市</label>
+        <select id="arr"></select>
       </div>
     </div>
-    
-    <button class="btn" onclick="calculate()">🔍 查询比价</button>
+    <div style="text-align:center;margin:-8px 0 8px">
+      <button class="swap-btn" onclick="swapCities()">🔄 交换</button>
+    </div>
+    <div class="row3">
+      <div class="form-group">
+        <label>出发日期</label>
+        <input type="date" id="date">
+      </div>
+      <div class="form-group">
+        <label>人数（成人）</label>
+        <input type="number" id="pax" value="1" min="1" max="9">
+      </div>
+      <div class="form-group">
+        <label>上游价格（元/万里程）</label>
+        <input type="number" id="cost" value="550" min="100" max="2000" step="10">
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn" id="btnSearch" onclick="searchSingle()">🔍 查指定航班比价</button>
+      <button class="btn btn-secondary" id="btnScan" onclick="scanAll()">📊 扫描全航线</button>
+    </div>
+    <div id="loading" style="display:none;text-align:center;padding:16px;">
+      <span class="loading"></span> 正在查询携程实时价格...
+    </div>
   </div>
-  
-  <div class="card result" id="result">
-    <div class="result-header">
-      <h2 id="route-title"></h2>
-      <p id="route-info"></p>
+
+  <!-- 结果区：指定查询 -->
+  <div class="card result" id="resultSingle">
+    <div class="section-title">📋 查询结果</div>
+    <div class="route-info" id="routeInfo"></div>
+
+    <div class="tab-row">
+      <div class="tab active" onclick="switchTab('cz',this)">南航 CZ</div>
+      <div class="tab" onclick="switchTab('3u',this)">川航 3U</div>
+      <div class="tab" onclick="switchTab('all',this)">全部航司</div>
     </div>
-    
-    <table>
-      <thead>
-        <tr>
-          <th>舱位</th>
-          <th>所需里程</th>
-          <th>里程成本</th>
-          <th>携程参考价</th>
-          <th>利润</th>
-          <th>利润率</th>
-        </tr>
-      </thead>
-      <tbody id="result-body"></tbody>
-    </table>
-    
+
+    <div id="tabCz">
+      <table>
+        <thead><tr>
+          <th>舱位</th><th>所需里程</th><th>里程成本/人</th><th>携程价/人</th><th>利润/人</th><th>总利润</th><th>判断</th>
+        </tr></thead>
+        <tbody id="czBody"></tbody>
+      </table>
+    </div>
+    <div id="tab3u" class="hidden">
+      <table>
+        <thead><tr>
+          <th>舱位</th><th>所需里程</th><th>里程成本/人</th><th>携程价/人</th><th>利润/人</th><th>总利润</th><th>判断</th>
+        </tr></thead>
+        <tbody id="u3Body"></tbody>
+      </table>
+    </div>
+    <div id="tabAll" class="hidden">
+      <table>
+        <thead><tr>
+          <th>航司</th><th>舱位</th><th>所需里程</th><th>成本/人</th><th>携程价/人</th><th>利润/人</th><th>判断</th>
+        </tr></thead>
+        <tbody id="allBody"></tbody>
+      </table>
+    </div>
+
     <div class="tips">
-      <h4>💡 使用提示</h4>
-      <p>1. 携程价格为参考价，实际价格可能有波动<br>
-         2. 点击"打开携程"可查看实时价格<br>
-         3. 绿色=有利润，红色=亏损，黄色=持平<br>
-         4. 建议优先关注公务舱和头等舱，利润空间更大</p>
+      💡 携程价格为实时最低价（按天），具体航班价格需用后端服务抓取。
+      <br>川航里程兑南航航班按川航标准执行、秒出；南航里程兑川航航班需等15天。
     </div>
+  </div>
+
+  <!-- 结果区：全航线扫描 -->
+  <div class="card result" id="resultScan">
+    <div class="section-title">📊 全航线扫描结果（按利润排序）</div>
+    <div class="route-info" id="scanInfo"></div>
+    <table>
+      <thead><tr>
+        <th>航线</th><th>距离</th><th>携程最低价</th><th>南航经济成本</th><th>川航经济成本</th><th>最大利润</th><th>推荐</th>
+      </tr></thead>
+      <tbody id="scanBody"></tbody>
+    </table>
   </div>
 </div>
 
 <script>
-const AIRPORTS = {
-  CTU: "成都", SYX: "三亚", PEK: "北京", PKX: "北京大兴",
-  SHA: "上海虹桥", PVG: "上海浦东", CAN: "广州", SZX: "深圳",
-  CKG: "重庆", KMG: "昆明", XIY: "西安", HGH: "杭州",
-  WUH: "武汉", NKG: "南京", CSX: "长沙", TAO: "青岛",
-  DLC: "大连", TSN: "天津", XMN: "厦门", FOC: "福州",
-  HAK: "海口", CGO: "郑州", TYN: "太原", SHE: "沈阳",
-  HRB: "哈尔滨", URC: "乌鲁木齐", LHW: "兰州", KWE: "贵阳"
+// ============ 城市数据 ============
+const CITIES = [
+  {code:"CTU",name:"成都",lat:30.5728,lon:103.9471},
+  {code:"PEK",name:"北京首都",lat:40.0799,lon:116.6031},
+  {code:"PKX",name:"北京大兴",lat:39.5098,lon:116.4105},
+  {code:"SHA",name:"上海虹桥",lat:31.1979,lon:121.3363},
+  {code:"PVG",name:"上海浦东",lat:31.1443,lon:121.8083},
+  {code:"CAN",name:"广州",lat:23.3924,lon:113.2988},
+  {code:"SZX",name:"深圳",lat:22.6393,lon:113.8107},
+  {code:"CKG",name:"重庆",lat:29.7192,lon:106.6417},
+  {code:"KMG",name:"昆明",lat:24.9924,lon:102.7432},
+  {code:"XIY",name:"西安",lat:34.4371,lon:108.7516},
+  {code:"HGH",name:"杭州",lat:30.2295,lon:120.4344},
+  {code:"WUH",name:"武汉",lat:30.7838,lon:114.2081},
+  {code:"NKG",name:"南京",lat:31.7421,lon:118.8622},
+  {code:"CSX",name:"长沙",lat:28.1892,lon:113.2200},
+  {code:"TAO",name:"青岛",lat:36.2661,lon:120.3744},
+  {code:"DLC",name:"大连",lat:38.9657,lon:121.5386},
+  {code:"TSN",name:"天津",lat:39.1244,lon:117.3462},
+  {code:"XMN",name:"厦门",lat:24.5440,lon:118.1276},
+  {code:"FOC",name:"福州",lat:25.9350,lon:119.6632},
+  {code:"HAK",name:"海口",lat:19.9349,lon:110.4589},
+  {code:"SYX",name:"三亚",lat:18.3029,lon:109.4120},
+  {code:"CGO",name:"郑州",lat:34.5197,lon:113.8407},
+  {code:"TYN",name:"太原",lat:37.7469,lon:112.6282},
+  {code:"SHE",name:"沈阳",lat:41.6398,lon:123.4830},
+  {code:"HRB",name:"哈尔滨",lat:45.6234,lon:126.2503},
+  {code:"URC",name:"乌鲁木齐",lat:43.9071,lon:87.4742},
+  {code:"LHW",name:"兰州",lat:36.5152,lon:103.6203},
+  {code:"KWE",name:"贵阳",lat:26.5385,lon:106.8009},
+  {code:"TNA",name:"济南",lat:36.8572,lon:117.2157},
+  {code:"WNZ",name:"温州",lat:27.9119,lon:120.8520},
+  {code:"NNG",name:"南宁",lat:22.6083,lon:108.1722},
+  {code:"SWA",name:"揭阳",lat:23.5540,lon:116.5066},
+  {code:"YIW",name:"义乌",lat:29.3447,lon:120.0322},
+  {code:"KWL",name:"桂林",lat:25.2181,lon:110.0390},
+  {code:"XMN",name:"厦门",lat:24.5440,lon:118.1276},
+  {code:"DSN",name:"鄂尔多斯",lat:39.4925,lon:109.8614},
+  {code:"HFE",name:"合肥",lat:31.7800,lon:117.2984},
+  {code:"INC",name:"银川",lat:38.3227,lon:106.3930},
+  {code:"XNN",name:"西宁",lat:36.5275,lon:102.0432},
+  {code:"AKU",name:"阿克苏",lat:41.2625,lon:80.2917},
+  {code:"KHG",name:"喀什",lat:39.5429,lon:76.0200},
+  {code:"HTN",name:"和田",lat:37.0386,lon:79.8653},
+  {code:"IQM",name:"且末",lat:38.1494,lon:85.5328},
+  {code:"TCG",name:"塔城",lat:46.6726,lon:83.3408},
+  {code:"AAT",name:"阿勒泰",lat:47.7499,lon:88.0858},
+  {code:"YIN",name:"伊宁",lat:43.9558,lon:81.3303},
+];
+
+// ============ 距离修正表（实际航距偏差大的航线）============
+const DISTANCE_CORRECTIONS = {
+  "CTU-SYX": 1850, "CTU-PEK": 1800, "CTU-HAK": 1650,
+  "PEK-SYX": 2500, "PEK-HAK": 2400,
 };
 
-const DISTANCES = {
-  "CTU-SYX": 1850, "CTU-PEK": 1800, "CTU-SHA": 1700, "CTU-CAN": 1300,
-  "CTU-SZX": 1400, "CTU-KMG": 700, "CTU-CKG": 350, "CTU-XIY": 650,
-  "CAN-SYX": 650, "CAN-PEK": 1900, "CAN-SHA": 1200, "CAN-SZX": 120,
-  "CAN-KMG": 1100, "CAN-HAK": 450, "PEK-SYX": 2500, "PEK-SHA": 1100,
-  "PEK-SZX": 2000, "PEK-DLC": 550, "SHA-SYX": 1900, "SHA-SZX": 1300,
-  "SHA-XMN": 700, "SZX-SYX": 550, "SZX-HAK": 500, "CKG-SYX": 1500,
-  "KMG-SYX": 1300, "XIY-SYX": 2000, "HGH-SYX": 1700, "WUH-SYX": 1500,
-  "NKG-SYX": 1800, "CSX-SYX": 1200, "TAO-SYX": 2200, "DLC-SYX": 2800,
-  "TSN-SYX": 2300, "XMN-SYX": 1000, "FOC-SYX": 1200, "CGO-SYX": 1700,
-  "TYN-SYX": 2100, "SHE-SYX": 3000, "HRB-SYX": 3500, "URC-SYX": 4000,
-  "HAK-CAN": 450, "HAK-PEK": 2400, "HAK-SHA": 1800, "HAK-SZX": 500
-};
+// ============ Haversine × 1.12 ============
+function calcDistance(city1, city2) {
+  const key1 = city1.code + "-" + city2.code;
+  const key2 = city2.code + "-" + city1.code;
+  if (DISTANCE_CORRECTIONS[key1]) return DISTANCE_CORRECTIONS[key1];
+  if (DISTANCE_CORRECTIONS[key2]) return DISTANCE_CORRECTIONS[key2];
+  const R = 6371;
+  const dLat = (city2.lat - city1.lat) * Math.PI / 180;
+  const dLon = (city2.lon - city1.lon) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(city1.lat*Math.PI/180) * Math.cos(city2.lat*Math.PI/180) * Math.sin(dLon/2)**2;
+  const h = R * 2 * Math.asin(Math.sqrt(a));
+  return Math.round(h * 1.12); // 修正系数
+}
 
-// 携程参考价格（经济舱，根据市场行情估算）
-const CTRIP_PRICES = {
-  "CTU-SYX": 550, "CTU-PEK": 800, "CTU-SHA": 750, "CTU-CAN": 600,
-  "CAN-SYX": 450, "CAN-PEK": 900, "PEK-SYX": 1200, "SHA-SYX": 1000,
-  "SZX-SYX": 400, "CKG-SYX": 650, "KMG-SYX": 700, "HGH-SYX": 850,
-  "WUH-SYX": 750, "CSX-SYX": 600
-};
+// ============ 南航里程兑换标准 ============
+function getCzMiles(distance) {
+  if (distance <= 800) return {economy:6000, business:12000, first:15000};
+  if (distance <= 1700) return {economy:12000, business:24000, first:30000};
+  if (distance <= 3000) return {economy:15000, business:30000, first:38000};
+  if (distance <= 5000) return {economy:25000, business:50000, first:63000};
+  return {economy:40000, business:60000, first:80000};
+}
 
-function getMileageRequired(distance, cabin) {
-  let zones;
-  if (distance <= 800) zones = {economy: 6000, business: 12000, first: 15000};
-  else if (distance <= 1700) zones = {economy: 12000, business: 24000, first: 30000};
-  else if (distance <= 3000) zones = {economy: 15000, business: 30000, first: 38000};
-  else if (distance <= 5000) zones = {economy: 25000, business: 50000, first: 63000};
-  else zones = {economy: 40000, business: 60000, first: 80000};
-  return zones[cabin];
+// ============ 川航里程兑换标准（官方）============
+function get3uMiles(distance) {
+  if (distance <= 800) return {economy:8000, business:14000};
+  if (distance <= 1200) return {economy:12000, business:21000};
+  if (distance <= 1600) return {economy:14000, business:24000};
+  if (distance <= 2000) return {economy:18000, business:28000};
+  if (distance <= 3000) return {economy:22000, business:36000};
+  return {economy:30000, business:50000};
+}
+
+// ============ 上游阶梯价格（南航卡1）============
+function getCzCostPerWan(miles) {
+  const wan = miles / 10000;
+  if (wan <= 0.7) return 510;
+  if (wan <= 1.0) return 520;
+  if (wan <= 1.1) return 550;
+  if (wan <= 1.2) return 600;
+  if (wan <= 1.3) return 630;
+  if (wan <= 1.5) return 670;
+  if (wan <= 1.8) return 670;
+  if (wan <= 2.3) return 640;
+  if (wan <= 2.5) return 670;
+  return 670;
+}
+
+// ============ 川航固定价格 ============
+function get3uCostPerWan() { return 700; }
+
+// ============ 初始化城市下拉 ============
+function initSelects() {
+  const dep = document.getElementById('dep');
+  const arr = document.getElementById('arr');
+  CITIES.forEach(c => {
+    dep.innerHTML += `<option value="${c.code}">${c.name}(${c.code})</option>`;
+    arr.innerHTML += `<option value="${c.code}">${c.name}(${c.code})</option>`;
+  });
+  dep.value = "CTU";
+  arr.value = "SYX";
+  // 默认日期：明天
+  const tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
+  document.getElementById('date').value = tmr.toISOString().split('T')[0];
 }
 
 function swapCities() {
-  const dep = document.getElementById('dep');
-  const arr = document.getElementById('arr');
-  const temp = dep.value;
-  dep.value = arr.value;
-  arr.value = temp;
+  const d = document.getElementById('dep'), a = document.getElementById('arr');
+  [d.value, a.value] = [a.value, d.value];
 }
 
-function calculate() {
-  const dep = document.getElementById('dep').value;
-  const arr = document.getElementById('arr').value;
-  const date = document.getElementById('date').value;
-  const cost = parseFloat(document.getElementById('cost').value);
-  
-  if (dep === arr) {
-    alert('出发和到达城市不能相同！');
-    return;
-  }
-  
-  const depName = AIRPORTS[dep];
-  const arrName = AIRPORTS[arr];
-  const key = dep + '-' + arr;
-  const reverseKey = arr + '-' + dep;
-  const distance = DISTANCES[key] || DISTANCES[reverseKey] || 2000;
-  const ctripPrice = CTRIP_PRICES[key] || CTRIP_PRICES[reverseKey] || 800;
-  
-  const cabins = [
-    {name: '经济舱', key: 'economy', icon: '💺'},
-    {name: '公务舱', key: 'business', icon: '🛋️'},
-    {name: '头等舱', key: 'first', icon: '👑'}
+function getCity(code) { return CITIES.find(c => c.code === code); }
+
+// ============ 调携程最低价API ============
+async function fetchLowestPrice(depCode, arrCode) {
+  const url = `https://flights.ctrip.com/itinerary/api/12808/lowestPrice?flightWay=Oneway&dcity=${depCode}&acity=${arrCode}&direct=false&army=false`;
+  try {
+    const resp = await fetch(url, {headers:{"Referer":"https://flights.ctrip.com/online/channel/domestic"}});
+    const data = await resp.json();
+    if (data.status === 0 && data.data?.oneWayPrice?.[0]) {
+      return data.data.oneWayPrice[0]; // {日期: 价格}
+    }
+  } catch(e) {}
+  return null;
+}
+
+// ============ 从价格表中取指定日期价格 ============
+function getPriceOnDate(priceMap, dateStr) {
+  if (!priceMap) return null;
+  const key = dateStr.replace(/-/g, '');
+  // 精确匹配
+  if (priceMap[key]) return priceMap[key];
+  // 找最近的
+  const keys = Object.keys(priceMap).sort();
+  for (const k of keys) { if (k >= key) return priceMap[k]; }
+  return priceMap[keys[keys.length-1]] || null;
+}
+
+// ============ 利润计算行 ============
+function calcRow(label, miles, costPerWan, ctripPrice, pax) {
+  const costPerPax = Math.round(miles * costPerWan / 10000);
+  const profitPerPax = ctripPrice - costPerPax;
+  const totalProfit = profitPerPax * pax;
+  const profitClass = profitPerPax > 50 ? 'positive' : profitPerPax < -50 ? 'negative' : 'zero';
+  const badgeClass = profitPerPax > 50 ? 'badge-green' : profitPerPax < -50 ? 'badge-red' : 'badge-yellow';
+  const badgeText = profitPerPax > 50 ? '可卖' : profitPerPax < -50 ? '亏损' : '持平';
+  return {label, miles, costPerPax, ctripPrice, profitPerPax, totalProfit, profitClass, badgeClass, badgeText};
+}
+
+// ============ 主查询 ============
+async function searchSingle() {
+  const depCode = document.getElementById('dep').value;
+  const arrCode = document.getElementById('arr').value;
+  const dateStr = document.getElementById('date').value;
+  const pax = parseInt(document.getElementById('pax').value) || 1;
+  const userCost = parseFloat(document.getElementById('cost').value) || 550;
+
+  if (depCode === arrCode) { alert('出发和到达不能相同！'); return; }
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('btnSearch').disabled = true;
+
+  const dep = getCity(depCode), arr = getCity(arrCode);
+  const distance = calcDistance(dep, arr);
+
+  // 查携程价格
+  const priceMap = await fetchLowestPrice(depCode, arrCode);
+  const ctripPrice = getPriceOnDate(priceMap, dateStr) || 800;
+
+  // 南航计算
+  const czMiles = getCzMiles(distance);
+  const czCostPerWan = getCzCostPerWan(czMiles.economy); // 用经济舱档位查价格
+
+  // 川航计算
+  const u3Miles = get3uMiles(distance);
+  const u3CostPerWan = get3uCostPerWan();
+
+  // 生成南航表格
+  const czRows = [
+    calcRow('💺 经济舱', czMiles.economy, czCostPerWan, ctripPrice, pax),
+    calcRow('🛋️ 公务舱', czMiles.business, czCostPerWan, ctripPrice, pax),
+    calcRow('👑 头等舱', czMiles.first, czCostPerWan, ctripPrice, pax),
   ];
-  
-  let html = '';
-  cabins.forEach(cabin => {
-    const miles = getMileageRequired(distance, cabin.key);
-    const mileCost = Math.round(miles * cost / 10000);
-    const ctrip = cabin.key === 'economy' ? ctripPrice : 
-                  cabin.key === 'business' ? Math.round(ctripPrice * 3.5) : 
-                  Math.round(ctripPrice * 5);
-    const profit = ctrip - mileCost;
-    const profitRate = mileCost > 0 ? Math.round(profit / mileCost * 100) : 0;
-    
-    const profitClass = profit > 50 ? 'positive' : profit < -50 ? 'negative' : 'zero';
-    const badgeClass = profit > 50 ? 'badge-green' : profit < -50 ? 'badge-red' : 'badge-yellow';
-    const badgeText = profit > 50 ? '可卖' : profit < -50 ? '亏损' : '持平';
-    
-    html += `<tr>
-      <td><strong>${cabin.icon} ${cabin.name}</strong></td>
-      <td>${miles.toLocaleString()}</td>
-      <td>¥${mileCost.toLocaleString()}</td>
-      <td>¥${ctrip.toLocaleString()}</td>
-      <td class="profit ${profitClass}">¥${profit > 0 ? '+' : ''}${profit.toLocaleString()}</td>
-      <td><span class="badge ${badgeClass}">${badgeText} ${profitRate}%</span></td>
-    </tr>`;
-  });
-  
-  document.getElementById('route-title').textContent = `${depName} → ${arrName}`;
-  document.getElementById('route-info').textContent = `${date} | 距离约${distance}公里 | 里程成本${cost}元/万`;
-  document.getElementById('result-body').innerHTML = html;
-  document.getElementById('result').classList.add('show');
-  
-  // 滚动到结果
-  document.getElementById('result').scrollIntoView({behavior: 'smooth'});
+  document.getElementById('czBody').innerHTML = czRows.map(r => `
+    <tr>
+      <td><strong>${r.label}</strong></td>
+      <td>${r.miles.toLocaleString()}</td>
+      <td>¥${r.costPerPax.toLocaleString()}</td>
+      <td>¥${r.ctripPrice.toLocaleString()}</td>
+      <td class="profit ${r.profitClass}">¥${r.profitPerPax > 0 ? '+' : ''}${r.profitPerPax.toLocaleString()}</td>
+      <td class="profit ${r.profitClass}">¥${r.totalProfit.toLocaleString()}</td>
+      <td><span class="badge ${r.badgeClass}">${r.badgeText}</span></td>
+    </tr>
+  `).join('');
+
+  // 生成川航表格
+  const u3Rows = [
+    calcRow('💺 经济舱', u3Miles.economy, u3CostPerWan, ctripPrice, pax),
+    calcRow('🛋️ 公务舱', u3Miles.business, u3CostPerWan, ctripPrice, pax),
+  ];
+  document.getElementById('u3Body').innerHTML = u3Rows.map(r => `
+    <tr>
+      <td><strong>${r.label}</strong></td>
+      <td>${r.miles.toLocaleString()}</td>
+      <td>¥${r.costPerPax.toLocaleString()}</td>
+      <td>¥${r.ctripPrice.toLocaleString()}</td>
+      <td class="profit ${r.profitClass}">¥${r.profitPerPax > 0 ? '+' : ''}${r.profitPerPax.toLocaleString()}</td>
+      <td class="profit ${r.profitClass}">¥${r.totalProfit.toLocaleString()}</td>
+      <td><span class="badge ${r.badgeClass}">${r.badgeText}</span></td>
+    </tr>
+  `).join('');
+
+  // 生成全航司对比表（南航+川航+携程市场价）
+  const allRows = [];
+  czRows.forEach(r => allRows.push({...r, airline:'南航CZ'}));
+  u3Rows.forEach(r => allRows.push({...r, airline:'川航3U'}));
+  // 川航里程兑南航航班
+  const u3toCzEco = calcRow('💺 川航兑南航', czMiles.economy, u3CostPerWan, ctripPrice, pax);
+  allRows.push({...u3toCzEco, airline:'川航→南航'});
+  document.getElementById('allBody').innerHTML = allRows.map(r => `
+    <tr>
+      <td><span class="badge badge-blue">${r.airline}</span></td>
+      <td><strong>${r.label}</strong></td>
+      <td>${r.miles.toLocaleString()}</td>
+      <td>¥${r.costPerPax.toLocaleString()}</td>
+      <td>¥${r.ctripPrice.toLocaleString()}</td>
+      <td class="profit ${r.profitClass}">¥${r.profitPerPax > 0 ? '+' : ''}${r.profitPerPax.toLocaleString()}</td>
+      <td><span class="badge ${r.badgeClass}">${r.badgeText}</span></td>
+    </tr>
+  `).join('');
+
+  // 路线信息
+  const priceDate = dateStr;
+  const prices = priceMap ? Object.values(priceMap) : [];
+  const minPrice = prices.length ? Math.min(...prices) : 'N/A';
+  document.getElementById('routeInfo').innerHTML = `
+    <span>📍 ${dep.name} → ${arr.name}</span>
+    <span>📏 ${distance}km</span>
+    <span>📅 ${dateStr}</span>
+    <span>👥 ${pax}人</span>
+    <span>💰 携程最低¥${ctripPrice}/人</span>
+    <span>📉 30天最低¥${minPrice}</span>
+    <span>🎯 上游${userCost}元/万里程</span>
+  `;
+
+  document.getElementById('resultSingle').classList.add('show');
+  document.getElementById('resultScan').classList.remove('show');
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('btnSearch').disabled = false;
+  document.getElementById('resultSingle').scrollIntoView({behavior:'smooth'});
 }
 
-// 设置默认日期为明天
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-document.getElementById('date').value = tomorrow.toISOString().split('T')[0];
+// ============ 全航线扫描 ============
+async function scanAll() {
+  const depCode = document.getElementById('dep').value;
+  const dateStr = document.getElementById('date').value;
+  const pax = parseInt(document.getElementById('pax').value) || 1;
+  const userCost = parseFloat(document.getElementById('cost').value) || 550;
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('btnScan').disabled = true;
+
+  const dep = getCity(depCode);
+  const results = [];
+  const batchSize = 5;
+
+  // 分批查询，避免请求太快
+  for (let i = 0; i < CITIES.length; i += batchSize) {
+    const batch = CITIES.slice(i, i + batchSize).filter(c => c.code !== depCode);
+    const promises = batch.map(async arr => {
+      const distance = calcDistance(dep, arr);
+      const priceMap = await fetchLowestPrice(depCode, arr.code);
+      const ctripPrice = getPriceOnDate(priceMap, dateStr) || 0;
+      if (!ctripPrice) return null;
+
+      const czMiles = getCzMiles(distance);
+      const u3Miles = get3uMiles(distance);
+      const czCostPerWan = getCzCostPerWan(czMiles.economy);
+      const czEcoCost = Math.round(czMiles.economy * czCostPerWan / 10000);
+      const czBizCost = Math.round(czMiles.business * czCostPerWan / 10000);
+      const u3EcoCost = Math.round(u3Miles.economy * 700 / 10000);
+      const u3BizCost = Math.round(u3Miles.business * 700 / 10000);
+
+      const profits = [
+        {airline:'南航',cabin:'经济',profit:ctripPrice-czEcoCost,cost:czEcoCost},
+        {airline:'南航',cabin:'公务',profit:ctripPrice-czBizCost,cost:czBizCost},
+        {airline:'川航',cabin:'经济',profit:ctripPrice-u3EcoCost,cost:u3EcoCost},
+        {airline:'川航',cabin:'公务',profit:ctripPrice-u3BizCost,cost:u3BizCost},
+      ];
+      const best = profits.reduce((a,b) => a.profit > b.profit ? a : b);
+
+      return {
+        name: `${dep.name}→${arr.name}`, code: arr.code, distance,
+        ctripPrice, czEcoCost, u3EcoCost, best, pax
+      };
+    });
+    const batchResults = await Promise.all(promises);
+    results.push(...batchResults.filter(Boolean));
+  }
+
+  // 按最大利润排序
+  results.sort((a,b) => b.best.profit - a.best.profit);
+
+  document.getElementById('scanInfo').innerHTML = `
+    <span>📍 ${dep.name}出发</span>
+    <span>📅 ${dateStr}</span>
+    <span>👥 ${pax}人</span>
+    <span>🎯 上游${userCost}元/万里程</span>
+    <span>📊 扫描${results.length}条航线</span>
+  `;
+
+  document.getElementById('scanBody').innerHTML = results.map(r => {
+    const profitClass = r.best.profit > 50 ? 'positive' : r.best.profit < -50 ? 'negative' : 'zero';
+    const badgeClass = r.best.profit > 50 ? 'badge-green' : r.best.profit < -50 ? 'badge-red' : 'badge-yellow';
+    return `
+      <tr>
+        <td><strong>${r.name}</strong></td>
+        <td>${r.distance}km</td>
+        <td>¥${r.ctripPrice}</td>
+        <td>¥${r.czEcoCost}</td>
+        <td>¥${r.u3EcoCost}</td>
+        <td class="profit ${profitClass}">¥${r.best.profit > 0 ? '+' : ''}${r.best.profit}/人</td>
+        <td><span class="badge ${badgeClass}">${r.best.airline} ${r.best.cabin}</span></td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('resultScan').classList.add('show');
+  document.getElementById('resultSingle').classList.remove('show');
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('btnScan').disabled = false;
+  document.getElementById('resultScan').scrollIntoView({behavior:'smooth'});
+}
+
+// ============ Tab切换 ============
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tabCz').classList.toggle('hidden', tab !== 'cz');
+  document.getElementById('tab3u').classList.toggle('hidden', tab !== '3u');
+  document.getElementById('tabAll').classList.toggle('hidden', tab !== 'all');
+}
+
+// 初始化
+initSelects();
 </script>
 </body>
 </html>
